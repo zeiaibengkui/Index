@@ -1,26 +1,35 @@
 document.addEventListener("contextmenu", (event) => {
     const el = event.target as HTMLElement;
-    //console.log(el.childNodes);
     if (el.childNodes.length > 1 || el.tagName !== "A") return;
-
-    const href = window.prompt("Href?") || "";
-    el.setAttribute("href", href);
-
     event.preventDefault();
+
+    el.innerHTML = JSON.stringify({
+        href: el.getAttribute("href"),
+        name: el.textContent,
+    });
     el.setAttribute("contenteditable", "plaintext-only");
+
     el.addEventListener("blur", () => {
         console.log(!el.textContent);
-        if(!el.textContent) el.parentElement?.remove();
+        if (!el.textContent) el.parentElement?.remove();
         //el.focus();
-        el.setAttribute("contenteditable","false");
+        try {
+            const processedInput = JSON.parse(el.textContent || "null");
+            el.innerHTML = processedInput.name;
+            el.setAttribute("href", processedInput.href);
+            //el.setAttribute("contenteditable", "false");
+            el.removeAttribute("contenteditable")
+        } catch (err) {
+            //window.alert("Format error. Please input again.")
+            //el.focus();
+        }
     });
 });
 
 const listEl = document.getElementById("list") as HTMLUListElement;
-
-window.addEventListener("keyup", (event) => {
+function add ()  {
     //console.log(event.code);
-    if (event.code !== "KeyA") return;
+    
     const name = window.prompt("Name?") || "";
     const href = window.prompt("Href?") || "";
     const a = document.createElement("a");
@@ -30,7 +39,9 @@ window.addEventListener("keyup", (event) => {
     a.appendChild(textNode);
     li.appendChild(a);
     listEl.appendChild(li);
-    save();
+}
+window.addEventListener("keyup", (e) => {
+    if (e.code == "KeyA" && e.altKey) add();
 });
 
 window.addEventListener("beforeunload", save);

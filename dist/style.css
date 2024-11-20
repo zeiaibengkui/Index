@@ -7,15 +7,15 @@ body {
   color: white;
   padding: 15vw;
   margin: 0;
-  font-family: sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 a {
-  color: aqua;
+  color: #8cffff;
 }
 
 a:visited {
-  color: blueviolet;
+  color: #ff8cff;
 }
 
 @keyframes h1-bg {
@@ -27,31 +27,38 @@ a:visited {
   }
 }
 li {
-  /* list-style: circle; */
-  transform: translate(0, 0);
-  transition: transform 0.2s cubic-bezier(0, 0, 0, 2.28);
+  list-style: disc;
+  margin-left: 0;
+  transition: margin-left 0.2s cubic-bezier(0, 0, 0, 2.28);
   margin: 2px;
+  border-radius: 3px;
 }
 li > a {
   display: block;
   width: 100%;
+  text-decoration: none;
 }
-
-li:hover {
-  transform: translate(10px, 0);
+li > a:focus {
+  outline: none;
+  text-decoration: underline;
+  background: rgba(255, 255, 255, 0.2);
+}
+li:hover, li:has(a[contenteditable]), li:has(a:focus) {
+  margin-left: 10px;
 }
 
 h1 {
   color: transparent;
+  margin: 0;
   background-image: linear-gradient(to right, transparent, transparent 50%, White 75%, transparent 75%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
   animation: h1-bg 5s linear infinite;
   transition: text-shadow 0.2s;
-  width: 150px;
+  width: max-content;
 }
-h1:hover, h1:has(input:checked) {
+h1:hover, h1 + input:checked {
   text-shadow: 0px 0px 0 rgba(255, 255, 255, 0.8);
 }
 h1 input {
@@ -68,13 +75,11 @@ h1 input {
 }
 
 #music {
-  position: absolute;
+  position: fixed;
   inset: auto 0 0 auto;
-  padding: 2rem;
   height: auto;
-  width: 300px;
+  width: min(100vh, 300px);
   overflow: hidden;
-  box-sizing: content-box;
 }
 #music:hover iframe {
   transform: translate(0, 0) rotate(0deg);
@@ -100,7 +105,7 @@ h1 input {
   z-index: 1;
   transition: all 0.4s;
   box-sizing: border-box;
-  padding: 1em 2rem 0rem 1rem;
+  padding: 1rem;
   border-radius: 100%;
 }
 #music > #img > * {
