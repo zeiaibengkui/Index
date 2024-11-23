@@ -1,54 +1,99 @@
-document.addEventListener("contextmenu", (event) => {
-    const el = event.target as HTMLElement;
-    if (el.childNodes.length > 1 || el.tagName !== "A") return;
-    event.preventDefault();
+const listEl = document.getElementById("list") as HTMLUListElement;
+function getElementIndex(element: HTMLElement): number {
+    return Array.prototype.indexOf.call(element.parentNode?.children, element);
+}
 
+//Edit
+function edit(el: HTMLElement) {
     el.innerHTML = JSON.stringify({
         href: el.getAttribute("href"),
         name: el.textContent,
     });
     el.setAttribute("contenteditable", "plaintext-only");
+    el.focus();
 
     el.addEventListener("blur", () => {
-        console.log(!el.textContent);
         if (!el.textContent) el.parentElement?.remove();
         //el.focus();
         try {
-            const processedInput = JSON.parse(el.textContent || "null");
+            //If formated JSON
+            const processedInput: { name: string; href: string } = JSON.parse(
+                el.textContent || "null"
+            );
+
+            //If there's already a same-name link
+            document.querySelectorAll("#list a").forEach((value) => {
+                if (value.textContent == processedInput.name) {
+                    window.alert("There's already a same-name link! Please try a new name.")
+                    throw new Error("There's already a same-name link!")
+                }
+            });
+
+            //Process userinput
             el.innerHTML = processedInput.name;
             el.setAttribute("href", processedInput.href);
-            //el.setAttribute("contenteditable", "false");
-            el.removeAttribute("contenteditable")
-        } catch (err) {
-            //window.alert("Format error. Please input again.")
-            //el.focus();
+            el.removeAttribute("contenteditable");
+        } catch (er) {
+            /* 
+            window.alert("Format error. Please input again.")
+            el.focus();
+             */
         }
     });
+}
+window.edit = edit;
+document.addEventListener("contextmenu", (event) => {
+    const el = event.target as HTMLElement;
+    if (el.childNodes.length > 1 || el.tagName !== "A") return;
+    event.preventDefault();
+
+    edit(el);
 });
 
-const listEl = document.getElementById("list") as HTMLUListElement;
-function add ()  {
-    //console.log(event.code);
-    
-    const name = window.prompt("Name?") || "";
-    const href = window.prompt("Href?") || "";
+//Add
+function add() {
     const a = document.createElement("a");
     const li = document.createElement("li");
-    a.setAttribute("href", href);
-    const textNode = document.createTextNode(name);
+    a.setAttribute("href", "https://");
+    const textNode = document.createTextNode("Title");
     a.appendChild(textNode);
     li.appendChild(a);
+    dragganle(li);
     listEl.appendChild(li);
+
+    edit(a);
 }
+window.add = add;
 window.addEventListener("keyup", (e) => {
     if (e.code == "KeyA" && e.altKey) add();
 });
+const addEl = document.getElementById("add");
+addEl?.addEventListener("click", add);
 
-window.addEventListener("beforeunload", save);
+//Remove
+const removeEl = document.getElementById("remove") as HTMLButtonElement;
+function remove(e: DragEvent) {
+    const index: number = (e.dataTransfer?.getData("Text") as any) - 0;
+    const liEl = listEl.children[index];
+    console.log(e.dataTransfer?.getData("Index"), listEl.children,listEl.children[index]);
+    liEl.remove();
+}
+window.remove = remove;
+removeEl.addEventListener("drop", remove);
+removeEl.addEventListener("dragover", (e) => e.preventDefault());
+
+//Save and load
+window.addEventListener("beforeunload", (e) => {
+    //If is editing
+    const focusEl = document.querySelector("a[contenteditable]");
+    if (focusEl) {
+        e.preventDefault();
+    }
+    save();
+});
 function save() {
     const list = {};
     document.querySelectorAll("#list a").forEach((value) => {
-        console.log(value);
         list[value.textContent || "nothing"] = value.getAttribute("href");
     });
     console.log(list);
@@ -65,7 +110,20 @@ window.addEventListener("DOMContentLoaded", () => {
         const textNode = document.createTextNode(property);
         a.appendChild(textNode);
         li.appendChild(a);
+        dragganle(li);
         listEl.appendChild(li);
-        console.log(li);
     }
 });
+
+//Drag
+function dragganle(li: HTMLLIElement) {
+    const a = li.children[0] as HTMLLinkElement;
+    a.setAttribute("draggable", "false");
+    li.setAttribute("draggable", "true");
+    li.addEventListener("dragstart", (e) => {
+        e.dataTransfer?.setData(
+            "Index",
+            getElementIndex(e.target as HTMLElement).toString()
+        );
+    });
+}
