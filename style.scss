@@ -2,22 +2,22 @@
     box-sizing: border-box;
 }
 
-.d-none{
+.d-none {
     display: none;
 }
 
-button{
+/* button{
     box-shadow: #ffffff00 0 0 0px 10px;
     background: transparent;
     color: white;
     transition: box-shadow .5s;
 
     &:active{
-        box-shadow: #ffffff 0 0 0px 0;
+        box-shadow: #ffffff7e 0 0 0px 0;
         transition: box-shadow 0s;
     }
-}
-
+} */
+ 
 body {
     background: #000;
     color: white;

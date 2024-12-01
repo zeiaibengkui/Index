@@ -1,3 +1,4 @@
+//import message from "./message";
 var listEl = document.getElementById("list");
 function getElementIndex(element) {
     var _a;
@@ -5,6 +6,9 @@ function getElementIndex(element) {
 }
 //Edit
 function edit(el) {
+    //Don't edit element which has been editing
+    if (el.getAttribute("contenteditable"))
+        return;
     el.innerHTML = JSON.stringify({
         href: el.getAttribute("href"),
         name: el.textContent
@@ -15,15 +19,13 @@ function edit(el) {
         var _a;
         if (!el.textContent)
             (_a = el.parentElement) === null || _a === void 0 ? void 0 : _a.remove();
-        //el.focus();
         try {
             //If formated JSON
             var processedInput_1 = JSON.parse(el.textContent || "null");
             //If there's already a same-name link
             document.querySelectorAll("#list a").forEach(function (value) {
                 if (value.textContent == processedInput_1.name) {
-                    window.alert("There's already a same-name link! Please try a new name.");
-                    throw new Error("There's already a same-name link!");
+                    throw new Error("There's already a same-named link! Please try a new name.");
                 }
             });
             //Process userinput
@@ -32,10 +34,8 @@ function edit(el) {
             el.removeAttribute("contenteditable");
         }
         catch (er) {
-            /*
-            window.alert("Format error. Please input again.")
-            el.focus();
-             */
+            //message.add(er.toString(),"error");
+            throw er;
         }
     });
 }
@@ -69,10 +69,10 @@ addEl === null || addEl === void 0 ? void 0 : addEl.addEventListener("click", ad
 //Remove
 var removeEl = document.getElementById("remove");
 function remove(e) {
-    var _a, _b;
-    var index = ((_a = e.dataTransfer) === null || _a === void 0 ? void 0 : _a.getData("Text")) - 0;
-    var liEl = listEl.children[index];
-    console.log((_b = e.dataTransfer) === null || _b === void 0 ? void 0 : _b.getData("Index"), listEl.children, listEl.children[index]);
+    var _a;
+    var index = (_a = e.dataTransfer) === null || _a === void 0 ? void 0 : _a.getData("Index");
+    var liEl = document.querySelectorAll("#list li")[index];
+    console.log(index, listEl.children, liEl);
     liEl.remove();
 }
 window.remove = remove;
@@ -108,7 +108,7 @@ window.addEventListener("DOMContentLoaded", function () {
         listEl.appendChild(li);
     }
 });
-//Drag
+//Draggable
 function dragganle(li) {
     var a = li.children[0];
     a.setAttribute("draggable", "false");
@@ -116,5 +116,7 @@ function dragganle(li) {
     li.addEventListener("dragstart", function (e) {
         var _a;
         (_a = e.dataTransfer) === null || _a === void 0 ? void 0 : _a.setData("Index", getElementIndex(e.target).toString());
+        e.dataTransfer.dropEffect = "move";
+        //e.dataTransfer?.setDragImage((e.target as Element).children[0],0,0)
     });
 }

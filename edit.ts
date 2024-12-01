@@ -1,3 +1,5 @@
+//import message from "./message";
+
 const listEl = document.getElementById("list") as HTMLUListElement;
 function getElementIndex(element: HTMLElement): number {
     return Array.prototype.indexOf.call(element.parentNode?.children, element);
@@ -5,6 +7,9 @@ function getElementIndex(element: HTMLElement): number {
 
 //Edit
 function edit(el: HTMLElement) {
+    //Don't edit element which has been editing
+    if (el.getAttribute("contenteditable")) return;
+
     el.innerHTML = JSON.stringify({
         href: el.getAttribute("href"),
         name: el.textContent,
@@ -14,7 +19,6 @@ function edit(el: HTMLElement) {
 
     el.addEventListener("blur", () => {
         if (!el.textContent) el.parentElement?.remove();
-        //el.focus();
         try {
             //If formated JSON
             const processedInput: { name: string; href: string } = JSON.parse(
@@ -24,8 +28,9 @@ function edit(el: HTMLElement) {
             //If there's already a same-name link
             document.querySelectorAll("#list a").forEach((value) => {
                 if (value.textContent == processedInput.name) {
-                    window.alert("There's already a same-name link! Please try a new name.")
-                    throw new Error("There's already a same-name link!")
+                    throw new Error(
+                        "There's already a same-named link! Please try a new name."
+                    );
                 }
             });
 
@@ -34,10 +39,8 @@ function edit(el: HTMLElement) {
             el.setAttribute("href", processedInput.href);
             el.removeAttribute("contenteditable");
         } catch (er) {
-            /* 
-            window.alert("Format error. Please input again.")
-            el.focus();
-             */
+            //message.add(er.toString(),"error");
+            throw er;
         }
     });
 }
@@ -73,9 +76,9 @@ addEl?.addEventListener("click", add);
 //Remove
 const removeEl = document.getElementById("remove") as HTMLButtonElement;
 function remove(e: DragEvent) {
-    const index: number = (e.dataTransfer?.getData("Text") as any) - 0;
-    const liEl = listEl.children[index];
-    console.log(e.dataTransfer?.getData("Index"), listEl.children,listEl.children[index]);
+    const index = e.dataTransfer?.getData("Index") as any;
+    const liEl = document.querySelectorAll("#list li")[index] as HTMLElement;
+    console.log(index, listEl.children, liEl);
     liEl.remove();
 }
 window.remove = remove;
@@ -115,7 +118,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-//Drag
+//Draggable
 function dragganle(li: HTMLLIElement) {
     const a = li.children[0] as HTMLLinkElement;
     a.setAttribute("draggable", "false");
@@ -125,5 +128,7 @@ function dragganle(li: HTMLLIElement) {
             "Index",
             getElementIndex(e.target as HTMLElement).toString()
         );
+        e.dataTransfer!.dropEffect = "move";
+        //e.dataTransfer?.setDragImage((e.target as Element).children[0],0,0)
     });
 }
