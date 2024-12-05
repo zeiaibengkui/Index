@@ -46,3 +46,6 @@
 #toast-box > .toast > .img.info > .info-img {
   display: inline-block;
 }
+#toast-box > .toast > .img.success > .success-img {
+  display: inline-block;
+}

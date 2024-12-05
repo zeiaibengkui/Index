@@ -16,33 +16,40 @@ function edit(el: HTMLElement) {
     });
     el.setAttribute("contenteditable", "plaintext-only");
     el.focus();
+    //bug
+    processEdit(el);
+}
+function processEdit(el: HTMLElement) {
+    el.addEventListener(
+        "blur",
+        () => {
+            if (!el.textContent) el.parentElement?.remove();
+            try {
+                //If formated JSON
+                const processedInput: { name: string; href: string } =
+                    JSON.parse(el.textContent || "null");
 
-    el.addEventListener("blur", () => {
-        if (!el.textContent) el.parentElement?.remove();
-        try {
-            //If formated JSON
-            const processedInput: { name: string; href: string } = JSON.parse(
-                el.textContent || "null"
-            );
+                //If there's already a same-name link
+                document.querySelectorAll("#list a").forEach((value) => {
+                    if (value.textContent == processedInput.name) {
+                        throw new Error(
+                            "There's already a same-named link! Please try a new name."
+                        );
+                    }
+                });
 
-            //If there's already a same-name link
-            document.querySelectorAll("#list a").forEach((value) => {
-                if (value.textContent == processedInput.name) {
-                    throw new Error(
-                        "There's already a same-named link! Please try a new name."
-                    );
-                }
-            });
-
-            //Process userinput
-            el.innerHTML = processedInput.name;
-            el.setAttribute("href", processedInput.href);
-            el.removeAttribute("contenteditable");
-        } catch (er) {
-            //message.add(er.toString(),"error");
-            throw er;
-        }
-    });
+                //Process userinput
+                el.innerHTML = processedInput.name;
+                el.setAttribute("href", processedInput.href);
+                el.removeAttribute("contenteditable");
+            } catch (er) {
+                //message.add(er.toString(),"error");0
+                processEdit(el);
+                throw er;
+            }
+        },
+        { once: true }
+    );
 }
 window.edit = edit;
 document.addEventListener("contextmenu", (event) => {
@@ -101,9 +108,12 @@ function save() {
     });
     console.log(list);
     localStorage.setItem("list", JSON.stringify(list));
+
+    message.add("Saved!","success")
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+    //load
     const list: object = JSON.parse(localStorage.getItem("list") || "{}");
 
     for (const property in list) {

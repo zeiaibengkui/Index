@@ -48,6 +48,9 @@
             &.info > .info-img {
                 display: inline-block;
             }
+            &.success > .success-img {
+                display: inline-block;
+            }
         }
     }
 }

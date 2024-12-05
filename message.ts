@@ -2,7 +2,7 @@ const messageBox = document.getElementById("toast-box");
 const toastExample = document.getElementById("toast-example");
 
 const message = {
-    add: (text: string, type: "info" | "error" | "warn" = "info") => {
+    add: (text: string, type: "info" | "error" | "warn"|"success"= "info") => {
         const toast = toastExample!.cloneNode(true) as HTMLElement;
         toast.setAttribute(
             "id",

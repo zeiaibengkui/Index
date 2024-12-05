@@ -15,6 +15,10 @@ function edit(el) {
     });
     el.setAttribute("contenteditable", "plaintext-only");
     el.focus();
+    //bug
+    processEdit(el);
+}
+function processEdit(el) {
     el.addEventListener("blur", function () {
         var _a;
         if (!el.textContent)
@@ -34,10 +38,11 @@ function edit(el) {
             el.removeAttribute("contenteditable");
         }
         catch (er) {
-            //message.add(er.toString(),"error");
+            //message.add(er.toString(),"error");0
+            processEdit(el);
             throw er;
         }
-    });
+    }, { once: true });
 }
 window.edit = edit;
 document.addEventListener("contextmenu", function (event) {
@@ -94,8 +99,10 @@ function save() {
     });
     console.log(list);
     localStorage.setItem("list", JSON.stringify(list));
+    message.add("Saved!", "success");
 }
 window.addEventListener("DOMContentLoaded", function () {
+    //load
     var list = JSON.parse(localStorage.getItem("list") || "{}");
     for (var property in list) {
         var a = document.createElement("a");
