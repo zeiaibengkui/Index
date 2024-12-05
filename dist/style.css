@@ -58,6 +58,9 @@ li > a:focus {
   text-decoration: underline;
   background: rgba(255, 255, 255, 0.2);
 }
+li > a[contenteditable] {
+  cursor: text;
+}
 li:hover, li:has(a[contenteditable]), li:has(a:focus) {
   margin-left: 10px;
 }

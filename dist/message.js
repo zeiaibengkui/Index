@@ -15,7 +15,12 @@ var message = {
         });
         toast.addEventListener("click", function (e) {
             toast.style.opacity = "0";
-            toast.style.marginBottom = -toast.clientHeight - 5 + "px";
+            if (getElementIndex(toast) == 1) { // getElementIndex(toast) == 0 is the example                
+                toast.style.marginBottom = -toast.clientHeight - 5 + "px";
+            }
+            else {
+                toast.style.marginTop = -toast.clientHeight - 5 + "px";
+            }
             setTimeout(function () {
                 toast.remove();
             }, 500);

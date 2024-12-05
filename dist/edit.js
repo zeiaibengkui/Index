@@ -4,6 +4,7 @@ function getElementIndex(element) {
     var _a;
     return Array.prototype.indexOf.call((_a = element.parentNode) === null || _a === void 0 ? void 0 : _a.children, element);
 }
+window.getElementIndex = getElementIndex;
 //Edit
 function edit(el) {
     //Don't edit element which has been editing
@@ -13,9 +14,9 @@ function edit(el) {
         href: el.getAttribute("href"),
         name: el.textContent
     });
-    el.setAttribute("contenteditable", "plaintext-only");
+    el.setAttribute("contenteditable", "");
+    el.parentNode.setAttribute("draggable", "false");
     el.focus();
-    //bug
     processEdit(el);
 }
 function processEdit(el) {
@@ -24,6 +25,9 @@ function processEdit(el) {
         if (!el.textContent)
             (_a = el.parentElement) === null || _a === void 0 ? void 0 : _a.remove();
         try {
+            //If is removing
+            if (!el)
+                return;
             //If formated JSON
             var processedInput_1 = JSON.parse(el.textContent || "null");
             //If there's already a same-name link
@@ -36,9 +40,11 @@ function processEdit(el) {
             el.innerHTML = processedInput_1.name;
             el.setAttribute("href", processedInput_1.href);
             el.removeAttribute("contenteditable");
+            el.parentNode.setAttribute("draggable", "true");
+            //Save
+            save();
         }
         catch (er) {
-            //message.add(er.toString(),"error");0
             processEdit(el);
             throw er;
         }

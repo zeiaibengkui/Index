@@ -4,6 +4,7 @@ const listEl = document.getElementById("list") as HTMLUListElement;
 function getElementIndex(element: HTMLElement): number {
     return Array.prototype.indexOf.call(element.parentNode?.children, element);
 }
+window.getElementIndex = getElementIndex;
 
 //Edit
 function edit(el: HTMLElement) {
@@ -14,9 +15,9 @@ function edit(el: HTMLElement) {
         href: el.getAttribute("href"),
         name: el.textContent,
     });
-    el.setAttribute("contenteditable", "plaintext-only");
+    el.setAttribute("contenteditable", "");
+    (el.parentNode as HTMLElement).setAttribute("draggable","false")
     el.focus();
-    //bug
     processEdit(el);
 }
 function processEdit(el: HTMLElement) {
@@ -25,6 +26,9 @@ function processEdit(el: HTMLElement) {
         () => {
             if (!el.textContent) el.parentElement?.remove();
             try {
+                //If is removing
+                if(!el) return ;
+
                 //If formated JSON
                 const processedInput: { name: string; href: string } =
                     JSON.parse(el.textContent || "null");
@@ -42,8 +46,11 @@ function processEdit(el: HTMLElement) {
                 el.innerHTML = processedInput.name;
                 el.setAttribute("href", processedInput.href);
                 el.removeAttribute("contenteditable");
+                (el.parentNode as HTMLElement).setAttribute("draggable","true")
+
+                //Save
+                save();
             } catch (er) {
-                //message.add(er.toString(),"error");0
                 processEdit(el);
                 throw er;
             }

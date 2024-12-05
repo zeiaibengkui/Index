@@ -2,9 +2,7 @@
     position: fixed;
     right: 0;
     top: 0;
-    //padding: 0.2rem;
-    width: max-content;
-    max-width: min(100vw, 10rem);
+    width: min(100vw, 15rem);
     height: auto;
     max-height: 100vh;
     overflow: scroll;
@@ -17,39 +15,51 @@
         -webkit-backdrop-filter: blur(5px);
         backdrop-filter: blur(5px);
         min-width: 9rem;
+        width: max-content;
+        max-width: calc(100% - 10px);
         border-radius: 0.2rem;
-        padding: 0.2rem;
-        margin: 5px;
+        --padding: 0.3rem;
+        padding: var(--padding);
+        margin: 5px 5px 5px auto;
         display: flex;
         align-items: center;
         opacity: 1;
-        transition: opacity 0.3s, margin 0.3s;
+        transition: opacity 0.3s, margin 0.3s, width 0.3s;
 
         &#toast-example {
             display: none;
         }
 
         > .img {
-            height: 3ex;
-            padding: 0.2rem;
+            --length: 2.5ex;
+            height: var(--length);
+            margin: 0 var(--padding) 0 0;
             display: inline-block;
+            border-radius: 50%;
+            background: white;
+            box-shadow: black 0 0 2px 0;
 
             > * {
                 display: none;
-                height: 3ex;
-                width: 3ex;
+                height: calc(var(--length) + 2px);
+                width: calc(var(--length) + 2px);
+                margin: -1px;
             }
             &.warn > .warn-img {
                 display: inline-block;
+                fill: gold;
             }
             &.error > .error-img {
                 display: inline-block;
+                fill: red;
             }
             &.info > .info-img {
                 display: inline-block;
+                fill: cornflowerblue;
             }
             &.success > .success-img {
                 display: inline-block;
+                fill: forestgreen;
             }
         }
     }

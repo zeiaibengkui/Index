@@ -115,16 +115,14 @@ function initArray() {
     }
 }
 
+/* const img = new Image();
+img.src =
+    "//ts1.cn.mm.bing.net/th/id/R-C.e8561073a98557c2fd30c80f8db75c8a?rik=oGbmcGIrPg65sw&riu=http%3a%2f%2fstatics.888ppt.com%2fUpload%2fphotothumb%2f20171121%2f88192.jpg!w800&ehk=uG43ZPV77TeV17p2tCXilsvMAaxaD61yTKhtECTKQqM%3d&risl=&pid=ImgRaw&r=0";
 function moon() {
-    var img = new Image(); // 创建 img 元素
-    img.onload = function () {
-        ctx.drawImage(img, 0, 0);
-    }
-    img.src =
-        "//ts1.cn.mm.bing.net/th/id/R-C.e8561073a98557c2fd30c80f8db75c8a?rik=oGbmcGIrPg65sw&riu=http%3a%2f%2fstatics.888ppt.com%2fUpload%2fphotothumb%2f20171121%2f88192.jpg!w800&ehk=uG43ZPV77TeV17p2tCXilsvMAaxaD61yTKhtECTKQqM%3d&risl=&pid=ImgRaw&r=0";
-}
+    ctx.drawImage(img, 0, 0);
+} */
 
-function animate(newTimestamp) {
+function animate(newTimestamp: number) {
     defTime = newTimestamp - time;
     time = newTimestamp;
     /*     if (time >= 360) {
@@ -134,7 +132,7 @@ function animate(newTimestamp) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    moon();
+    //moon();
     meteors.forEach((meteor) => {
         meteor.update();
         meteor.draw();
@@ -143,6 +141,7 @@ function animate(newTimestamp) {
         star.update();
         star.draw();
     });
+    
     requestAnimationFrame(animate);
 }
 animate(time);
